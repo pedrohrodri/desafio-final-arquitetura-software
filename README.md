@@ -7,17 +7,33 @@
 - Gradle Kotlin DSL
 - draw.io (para diagramas C4)
 
+---
+
+## 🔗 Links de Demo
+
+- **Swagger UI**  
+  https://desafio-final-api-da45594113cf.herokuapp.com/swagger-ui/index.html
+
+- **OpenAPI JSON (`/v3/api-docs`)**  
+  https://desafio-final-api-da45594113cf.herokuapp.com/v3/api-docs
+
+---
+
 ## Como Executar
 
 1. Clone este repositório:
+
    ```bash
    git clone https://github.com/pedrohrodri/desafio-final-arquitetura-software.git &&
    cd desafio-final-arquitetura-software
    ```
+   
 2. Suba os containers com Docker Compose:
+
    ```bash
    docker-compose up --build
    ```
+   
    – Isso irá:
     - Baixar a imagem do MongoDB e subir o container.
     - Gerar a imagem da sua API (via Dockerfile) e executá-la.
@@ -25,14 +41,19 @@
 3. Acesse a API em http://localhost:8080
 
 Se quiser subir só a API (supondo que já tenha um MongoDB local rodando), use:
+
 ```bash
 ./gradlew bootRun
 ```
+
 ou
+
 ```bash
 docker build -t desafio-final .
 docker run -p 8080:8080 desafio-final
 ```
+
+---
 
 ## Estrutura de Pastas
 

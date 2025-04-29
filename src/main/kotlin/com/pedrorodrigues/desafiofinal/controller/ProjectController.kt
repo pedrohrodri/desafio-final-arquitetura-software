@@ -2,7 +2,6 @@ package com.pedrorodrigues.desafiofinal.controller
 
 import com.pedrorodrigues.desafiofinal.dto.ProjectDTO
 import com.pedrorodrigues.desafiofinal.mapper.ProjectMapper
-import com.pedrorodrigues.desafiofinal.model.project.Project
 import com.pedrorodrigues.desafiofinal.service.project.ProjectReadService
 import com.pedrorodrigues.desafiofinal.service.project.ProjectWriteService
 import org.springframework.web.bind.annotation.*

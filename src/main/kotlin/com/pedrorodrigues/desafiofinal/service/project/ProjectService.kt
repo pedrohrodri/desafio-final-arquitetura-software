@@ -1,10 +1,10 @@
 package com.pedrorodrigues.desafiofinal.service.project
 
+import com.pedrorodrigues.desafiofinal.core.exception.NotFoundException
 import com.pedrorodrigues.desafiofinal.model.project.Project
 import com.pedrorodrigues.desafiofinal.repository.ProjectRepository
 import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
 
 interface ProjectReadService {
     fun findAll(): List<Project>
@@ -43,7 +43,8 @@ class ProjectServiceImpl(
     }
 
     override fun update(id: String, project: Project): Project {
-        val existingProject = this.findById(id) ?: throw ChangeSetPersister.NotFoundException()
+        val existingProject = this.findById(id)
+            ?: throw NotFoundException("O projeto buscado não foi encontrado.")
 
         updateValidators.forEach {
             it.validateOnUpdate(

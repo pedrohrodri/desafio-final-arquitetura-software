@@ -50,7 +50,7 @@ class DescriptionLengthCreateValidator(
             ?.takeIf { it.length > maxLen }
             ?.let {
                 throw ValidationException(
-                    "Descrição excede o tamanho máximo de $maxLen caracteres (atual=${it.length})."
+                    "Descrição excede o tamanho máximo de $maxLen caracteres tamanho recebido: ${it.length}."
                 )
             }
     }

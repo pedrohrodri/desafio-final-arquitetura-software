@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: desafio-final-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - desafio-final-mongodb-data:/data/db
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: desafio-final-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/desafio-db
+    depends_on:
+      - mongodb
+
+volumes:
+  desafio-final-mongodb-data:

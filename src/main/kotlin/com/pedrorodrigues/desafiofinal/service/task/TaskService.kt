@@ -4,9 +4,9 @@ import com.pedrorodrigues.desafiofinal.core.exception.NotFoundException
 import com.pedrorodrigues.desafiofinal.core.util.genId
 import com.pedrorodrigues.desafiofinal.model.project.Project
 import com.pedrorodrigues.desafiofinal.model.task.Task
-import com.pedrorodrigues.desafiofinal.repository.ProjectCustomTaskRepository
+import com.pedrorodrigues.desafiofinal.repository.ProjectCustomReadTaskRepository
+import com.pedrorodrigues.desafiofinal.repository.ProjectCustomWriteTaskRepository
 import com.pedrorodrigues.desafiofinal.service.project.ProjectReadService
-import com.pedrorodrigues.desafiofinal.service.project.ProjectWriteService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -26,8 +26,8 @@ interface TaskWriteService {
 @Service
 class TaskServiceImpl(
     private val projectReadService: ProjectReadService,
-    private val projectWriteService: ProjectWriteService,
-    private val repository: ProjectCustomTaskRepository,
+    private val repositoryWrite: ProjectCustomWriteTaskRepository,
+    private val repositoryRead: ProjectCustomReadTaskRepository,
     private val createValidators: List<TaskCreateValidator>,
     private val updateValidators: List<TaskUpdateValidator>
 ) : TaskReadService, TaskWriteService {
@@ -36,52 +36,47 @@ class TaskServiceImpl(
         if (projectReadService.findById(projectId) == null)
             throw NotFoundException("Nenhuma Task encontrada.")
 
-        return repository.findAllByProjectId(projectId)
+        return repositoryRead.findAllByProjectId(projectId)
     }
 
     override fun findById(projectId: String, taskId: String): Task? {
         this.findProjectByIdOrThrow(projectId)
 
-        return repository.findByProjectIdAndTaskId(projectId, taskId)
+        return repositoryRead.findByProjectIdAndTaskId(projectId, taskId)
     }
 
     override fun findByTitle(projectId: String, title: String): Task {
         this.findProjectByIdOrThrow(projectId)
 
-        return repository.findByProjectIdAndTitleContaining(projectId, title).first()
+        return repositoryRead.findByProjectIdAndTitleContaining(projectId, title).first()
     }
 
     override fun count(projectId: String): Long {
         this.findProjectByIdOrThrow(projectId)
 
-        return repository.countTasksByProjectId(projectId)
+        return repositoryRead.countTasksByProjectId(projectId)
     }
 
     override fun create(projectId: String, task: Task): Task {
-        val project = this.findProjectByIdOrThrow(projectId)
+        val project = findProjectByIdOrThrow(projectId)
         val newTask = task.copy(
             id = genId(),
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now()
         )
-
-        createValidators.forEach { it.validate(project, task) }
-        projectWriteService.update(projectId, project.copy(tasks = project.tasks?.plus(newTask)))
+        createValidators.forEach { it.validate(project, newTask) }
+        repositoryWrite.addTask(projectId, newTask)
 
         return newTask
     }
 
     override fun update(projectId: String, taskId: String, task: Task): Task {
-        val project: Project = this.findProjectByIdOrThrow(projectId)
-        val index: Int = project.tasks?.indexOfFirst { it.id == taskId }
+        val project = findProjectByIdOrThrow(projectId)
+        val existing = project.tasks!!.firstOrNull { it.id == taskId }
             ?: throw NotFoundException("Nenhuma Task encontrada.")
-        if (index < 0) throw NotFoundException("Nenhuma Task encontrada.")
-
-        val existing = project.tasks[index]
-
         updateValidators.forEach { it.validate(project, existing, task) }
 
-        val updatedTask = existing.copy(
+        val updated = existing.copy(
             title = task.title,
             status = task.status,
             dueDate = task.dueDate,
@@ -89,22 +84,13 @@ class TaskServiceImpl(
             assignee = task.assignee,
             updatedAt = LocalDateTime.now()
         )
-
-        val newTasks = project.tasks.toMutableList().apply { this[index] = updatedTask }
-        projectWriteService.update(projectId, project.copy(tasks = newTasks))
-
-        return updatedTask
+        repositoryWrite.updateTask(projectId, taskId, updated)
+        return updated
     }
 
     override fun delete(projectId: String, taskId: String) {
-        val project = this.findProjectByIdOrThrow(projectId)
-
-        if (project.tasks?.none { it.id == taskId } == true)
-            throw NotFoundException("Nenhuma Task encontrada.")
-
-        val filtered = project.tasks?.filterNot { it.id == taskId }
-
-        projectWriteService.update(projectId, project.copy(tasks = filtered))
+        findProjectByIdOrThrow(projectId)
+        repositoryWrite.removeTask(projectId, taskId)
     }
 
     private fun findProjectByIdOrThrow(projectId: String): Project =

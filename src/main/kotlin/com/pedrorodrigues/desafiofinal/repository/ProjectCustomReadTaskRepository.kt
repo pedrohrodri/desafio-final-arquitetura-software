@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ProjectCustomTaskRepository : MongoRepository<Project, String> {
+interface ProjectCustomReadTaskRepository : MongoRepository<Project, String> {
 
     @Aggregation(
         pipeline = [
@@ -45,4 +45,5 @@ interface ProjectCustomTaskRepository : MongoRepository<Project, String> {
         ]
     )
     fun countTasksByProjectId(projectId: String): Long
+
 }

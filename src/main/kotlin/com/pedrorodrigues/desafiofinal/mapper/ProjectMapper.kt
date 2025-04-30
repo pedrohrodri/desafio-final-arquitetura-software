@@ -11,6 +11,6 @@ interface ProjectMapper {
     fun toEntity(dto: ProjectDTO): Project
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "tasks", expression = "java(new java.util.ArrayList<>())")
     fun toEntityWithIgnore(dto: ProjectDTO): Project
 }

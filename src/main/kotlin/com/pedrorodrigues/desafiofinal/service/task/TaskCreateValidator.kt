@@ -47,7 +47,7 @@ class TaskDueDateNotPastCreateValidator : TaskCreateValidator {
 @Component
 class TaskUniqueTitleCreateValidator : TaskCreateValidator {
     override fun validate(project: Project, task: Task) {
-        if (project.tasks?.any { it.title.equals(task.title, ignoreCase = true) } == true) {
+        if (project.tasks.any { it.title.equals(task.title, ignoreCase = true) }) {
             throw ValidationException("Já existe uma Task com título '${task.title}' neste projeto.")
         }
     }

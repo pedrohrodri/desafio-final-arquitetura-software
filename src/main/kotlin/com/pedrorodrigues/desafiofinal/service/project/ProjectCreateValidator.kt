@@ -62,7 +62,7 @@ class TaskLimitCreateValidator(
     private val maxTasks: Int
 ) : ProjectCreateValidator {
     override fun validate(project: Project) {
-        val count = project.tasks?.size ?: 0
+        val count = project.tasks.size
 
         if (count > maxTasks) {
             throw ValidationException(

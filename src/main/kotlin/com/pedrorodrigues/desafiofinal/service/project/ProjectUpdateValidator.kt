@@ -65,7 +65,7 @@ class TaskLimitUpdateValidator(
     private val maxTasks: Int
 ) : ProjectUpdateValidator {
     override fun validateOnUpdate(existing: Project, updates: Project) {
-        val count = updates.tasks?.size ?: existing.tasks?.size ?: 0
+        val count = updates.tasks.size
         if (count > maxTasks) {
             throw ValidationException(
                 "Número de tarefas ($count) excede o limite máximo de $maxTasks."

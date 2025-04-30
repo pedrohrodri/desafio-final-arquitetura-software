@@ -31,11 +31,11 @@ class ProjectController(
 
     @PostMapping
     fun create(@RequestBody dto: ProjectDTO): ProjectDTO =
-        writeService.create(mapper.toEntityForCreate(dto)).let { mapper.toDto(it) }
+        writeService.create(mapper.toEntityWithIgnore(dto)).let { mapper.toDto(it) }
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: String, @RequestBody dto: ProjectDTO): ProjectDTO =
-        writeService.update(id, mapper.toEntity(dto)).let { mapper.toDto(it) }
+        writeService.update(id, mapper.toEntityWithIgnore(dto)).let { mapper.toDto(it) }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: String) = writeService.delete(id)

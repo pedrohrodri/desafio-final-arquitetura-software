@@ -12,5 +12,5 @@ interface ProjectMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "tasks", ignore = true)
-    fun toEntityForCreate(dto: ProjectDTO): Project
+    fun toEntityWithIgnore(dto: ProjectDTO): Project
 }

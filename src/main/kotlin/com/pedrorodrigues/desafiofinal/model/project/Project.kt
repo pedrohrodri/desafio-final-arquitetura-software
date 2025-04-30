@@ -1,5 +1,6 @@
 package com.pedrorodrigues.desafiofinal.model.project
 
+import com.pedrorodrigues.desafiofinal.core.util.genId
 import com.pedrorodrigues.desafiofinal.model.task.Task
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
@@ -9,7 +10,7 @@ import java.time.LocalDateTime
 
 @Document(collection = "projects")
 data class Project(
-    @Id val id: String? = null,
+    val id: String? = genId(),
     var name: String,
     var description: String? = null,
     var startDate: LocalDateTime? = null,

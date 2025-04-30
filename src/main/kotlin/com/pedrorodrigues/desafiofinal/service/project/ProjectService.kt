@@ -3,7 +3,6 @@ package com.pedrorodrigues.desafiofinal.service.project
 import com.pedrorodrigues.desafiofinal.core.exception.NotFoundException
 import com.pedrorodrigues.desafiofinal.model.project.Project
 import com.pedrorodrigues.desafiofinal.repository.ProjectRepository
-import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.stereotype.Service
 
 interface ProjectReadService {
@@ -52,7 +51,15 @@ class ProjectServiceImpl(
                 project
             )
         }
-        return repository.save(project)
+
+        existingProject.apply {
+            name = project.name
+            description = project.description
+            startDate = project.startDate
+            estimatedEndDate = project.estimatedEndDate
+        }
+
+        return repository.save(existingProject)
     }
 
     override fun delete(id: String) = repository.deleteById(id)
